@@ -24,7 +24,11 @@ export function Search({ searchValue }: SearchProps) {
   return (
     <>
       <form onSubmit={onSubmit}>
-        <input className="searchInput" name="searchInput" defaultValue={defaultPokemon}></input>
+        <input
+          className="searchInput"
+          name="searchInput"
+          defaultValue={defaultPokemon}
+        ></input>
         <button type="submit">Search</button>
       </form>
     </>

@@ -14,7 +14,6 @@ interface AppState {
 }
 
 class App extends Component<NonNullable<unknown>, AppState> {
-
   constructor(props: NonNullable<unknown>) {
     super(props);
     this.state = {
@@ -56,7 +55,7 @@ class App extends Component<NonNullable<unknown>, AppState> {
         })
       )
       .catch((error) => this.handleError(error));
-  }
+  };
 
   getPokemons = async (page: string = '1') => {
     const pokemonPageLimit = 15;
@@ -78,7 +77,7 @@ class App extends Component<NonNullable<unknown>, AppState> {
       loading: false,
       pokemonCount: Math.ceil(initialData.count / pokemonPageLimit),
     });
-  }
+  };
 
   private handleError(error: Error) {
     this.setState({
@@ -107,7 +106,12 @@ class App extends Component<NonNullable<unknown>, AppState> {
           <div>
             <Search searchValue={this.onSearch} />
           </div>
-          {pokemonCount && <Pagination selectAmount={pokemonCount} currentPage={this.getPokemons}></Pagination>}
+          {pokemonCount && (
+            <Pagination
+              selectAmount={pokemonCount}
+              currentPage={this.getPokemons}
+            ></Pagination>
+          )}
           {pokemons.length ? (
             <div className="pokemon-list">
               {pokemons.map((pokemon) => (

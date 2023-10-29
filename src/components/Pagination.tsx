@@ -8,8 +8,8 @@ interface PaginationProps {
 export function Pagination({ selectAmount, currentPage }: PaginationProps) {
   function setCurrentPage(event: React.ChangeEvent<HTMLSelectElement>) {
     const target = event.target as HTMLSelectElement;
-    console.log(1,target.value);
-    currentPage(target.value)
+    console.log(1, target.value);
+    currentPage(target.value);
   }
   return (
     <div className="pagination">
