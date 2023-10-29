@@ -17,7 +17,7 @@ export function Pagination({ selectAmount, currentPage }: PaginationProps) {
       <select defaultValue="1" onChange={setCurrentPage}>
         {Array.from(Array(selectAmount).keys()).map((i) => (
           <option value={i} key={i}>
-            {i + 1}
+            {i}
           </option>
         ))}
       </select>
