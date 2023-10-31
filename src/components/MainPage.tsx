@@ -99,7 +99,11 @@ class MainPage extends Component<NonNullable<unknown>, MainPageState> {
             marginBottom: '32px',
           }}
         >
-          <Search initValue={localStorage.getItem(LS_PEOPLE) || ''} searchValue={this.onSearch} lsName={LS_PEOPLE} />
+          <Search
+            initValue={localStorage.getItem(LS_PEOPLE) || ''}
+            searchValue={this.onSearch}
+            lsName={LS_PEOPLE}
+          />
 
           <button className="error" onClick={this.handleErrorButtonClick}>
             Error

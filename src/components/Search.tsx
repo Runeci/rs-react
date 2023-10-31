@@ -12,7 +12,7 @@ export function Search({ initValue, searchValue, lsName }: SearchProps) {
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
     const value = formData.get('searchInput') as string;
-      value
+    value
       ? localStorage.setItem(lsName, value)
       : localStorage.removeItem(lsName);
     searchValue(value);
