@@ -8,7 +8,13 @@ export interface PeopleListProps {
 const PeopleList = ({ peopleList }: PeopleListProps) => {
   return (
     <>
-      <ul className="people-list">
+      <ul
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr)',
+          gap: '24px',
+        }}
+      >
         {peopleList.map((person) => (
           <Person person={person} key={person.name} />
         ))}

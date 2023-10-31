@@ -6,11 +6,22 @@ interface PersonProps {
 
 const Person = ({ person }: PersonProps) => {
   return (
-    <div>
-      <h1>{person.name}</h1>
-      <p>Height: {person.height}</p>
-      <p>Gender: {person.gender}</p>
-      <p>Birth year: {person.birth_year}</p>
+    <div
+      style={{
+        border: '1px solid white',
+        borderRadius: '8px',
+      }}
+    >
+      <h2>{person.name}</h2>
+      <p>
+        <b>Height:</b> {person.height}
+      </p>
+      <p>
+        <b>Gender:</b> {person.gender}
+      </p>
+      <p>
+        <b>Birth year:</b> {person.birth_year}
+      </p>
     </div>
   );
 };
