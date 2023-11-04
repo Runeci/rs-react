@@ -1,5 +1,6 @@
 import { SWPerson } from '../services/SWAPI.tsx';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import React from 'react';
 
 interface PersonProps {
   person: SWPerson;
@@ -13,7 +14,9 @@ const Person = ({ person }: PersonProps) => {
         borderRadius: '8px',
       }}
     >
-      <Link to={`detail/${person.url.split('people/')[1].replace(/\//g, '')}`}>
+      <NavLink
+        to={`detail/${person.url.split('people/')[1].replace(/\//g, '')}`}
+      >
         <h2>{person.name}</h2>
         <p>
           <b>Height:</b> {person.height}
@@ -24,7 +27,7 @@ const Person = ({ person }: PersonProps) => {
         <p>
           <b>Birth year:</b> {person.birth_year}
         </p>
-      </Link>
+      </NavLink>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { SWAPI, SWPerson } from '../services/SWAPI.tsx';
 
@@ -6,7 +6,7 @@ const MyComponent = () => {
   const [data, setData] = useState<SWPerson>();
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
-  const SWService = useMemo(() => new SWAPI(), []);
+  const SWService = new SWAPI();
 
   useEffect(() => {
     if (id) {
@@ -16,7 +16,8 @@ const MyComponent = () => {
         setData(r);
       });
     }
-  }, [id, SWService]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   return (
     <>

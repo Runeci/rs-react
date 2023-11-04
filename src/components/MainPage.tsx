@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DEFAULT_ITEMS_PER_PAGE, SWAPI, SWPerson } from '../services/SWAPI.tsx';
 import { LS_SEARCH } from '../models/const.tsx';
 import { Search } from './Search.tsx';
@@ -7,7 +7,7 @@ import PeopleList from './PeopleList.tsx';
 import { Outlet, useParams, useSearchParams } from 'react-router-dom';
 
 const MainPage = () => {
-  const SWAPIService = useMemo(() => new SWAPI(), []);
+  const SWAPIService = new SWAPI();
   const { id } = useParams();
 
   const [data, setData] = useState<SWPerson[]>([]);
@@ -18,7 +18,7 @@ const MainPage = () => {
   useEffect(() => {
     setLoading(true);
     setData([]);
-    const fetchData = async () => {
+    async function fetchData() {
       const searchValue = searchBarParams.get('search') || '';
       const pageValue = searchBarParams.get('page') || '1';
       const perPage = searchBarParams.get('per') || '10';
@@ -40,9 +40,10 @@ const MainPage = () => {
         console.error('Error fetching data:', error);
         setLoading(false);
       }
-    };
+    }
     fetchData();
-  }, [searchBarParams, SWAPIService]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchBarParams]);
 
   useEffect(() => {
     if (localStorage.getItem(LS_SEARCH)) {
@@ -55,7 +56,8 @@ const MainPage = () => {
       searchBarParams.delete('search');
       setSearchBarParams(searchBarParams);
     };
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const addQueryParam = (key: string, value: string) => {
     if (!value) {
