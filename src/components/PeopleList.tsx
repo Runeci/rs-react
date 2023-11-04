@@ -1,5 +1,6 @@
 import { SWPeople } from '../services/SWAPI.tsx';
 import Person from './Person.tsx';
+import { NavLink } from 'react-router-dom';
 
 export interface PeopleListProps {
   peopleList: SWPeople['results'];
@@ -8,17 +9,21 @@ export interface PeopleListProps {
 const PeopleList = ({ peopleList }: PeopleListProps) => {
   return (
     <>
-      <ul
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr)',
-          gap: '24px',
-        }}
-      >
-        {peopleList.map((person) => (
-          <Person person={person} key={person.name} />
-        ))}
-      </ul>
+      <NavLink to={'/'}>
+        <ul
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr)',
+            gap: '24px',
+            border: '1px solid white',
+            padding: '10px',
+          }}
+        >
+          {peopleList.map((person) => (
+            <Person person={person} key={person.name} />
+          ))}
+        </ul>
+      </NavLink>
     </>
   );
 };

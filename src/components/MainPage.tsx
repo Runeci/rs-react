@@ -1,136 +1,119 @@
-import { SWAPI, SWPerson } from '../services/SWAPI.tsx';
-import { Component } from 'react';
-import { LS_PEOPLE, SEARCH_AMOUNT_PER_PAGE } from '../models/const.tsx';
+import { useEffect, useMemo, useState } from 'react';
+import { DEFAULT_ITEMS_PER_PAGE, SWAPI, SWPerson } from '../services/SWAPI.tsx';
+import { LS_SEARCH } from '../models/const.tsx';
 import { Search } from './Search.tsx';
-import PeopleList from './PeopleList.tsx';
 import { Pagination } from './Pagination.tsx';
+import PeopleList from './PeopleList.tsx';
+import { Outlet, useParams, useSearchParams } from 'react-router-dom';
 
-interface MainPageState {
-  people: SWPerson[];
-  loading: boolean;
-  error: boolean;
-  searchValue: string;
-  peopleCount: number | null;
-  currentPage: string;
-}
+const MainPage = () => {
+  const SWAPIService = useMemo(() => new SWAPI(), []);
+  const { id } = useParams();
 
-class MainPage extends Component<NonNullable<unknown>, MainPageState> {
-  constructor(
-    props: NonNullable<unknown>,
-    private SWAPIService: SWAPI
-  ) {
-    super(props);
-    this.SWAPIService = new SWAPI();
-    this.state = {
-      people: [],
-      loading: true,
-      error: false,
-      searchValue: '',
-      peopleCount: null,
-      currentPage: '1',
+  const [data, setData] = useState<SWPerson[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [maxPageAmount, setPageAmount] = useState(1);
+  const [searchBarParams, setSearchBarParams] = useSearchParams();
+
+  useEffect(() => {
+    setLoading(true);
+    setData([]);
+    const fetchData = async () => {
+      const searchValue = searchBarParams.get('search') || '';
+      const pageValue = searchBarParams.get('page') || '1';
+      const perPage = searchBarParams.get('per') || '10';
+
+      try {
+        const res = await SWAPIService.getSWPeople(searchValue, pageValue);
+        if (perPage === '5') {
+          //Due to not suitable API I decided to do it this way -> just get firs 5 items out of
+          // 10(default amount items per page which can not be changed)
+          const data = res.results.splice(0, 5);
+          setData(data);
+        } else {
+          setData(res.results);
+        }
+
+        setPageAmount(res.count / DEFAULT_ITEMS_PER_PAGE);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setLoading(false);
+      }
     };
-    this.handleErrorButtonClick = this.handleErrorButtonClick.bind(this);
-  }
+    fetchData();
+  }, [searchBarParams, SWAPIService]);
 
-  componentDidMount = async () => {
-    const searchValue = localStorage.getItem(LS_PEOPLE) || '';
-    await this.SWAPIService.getSWPeople(searchValue, '1')
-      .then((res) =>
-        this.setState({
-          people: res.results,
-          peopleCount: res.count,
-          loading: false,
-          searchValue,
-        })
-      )
-      .catch(() => this.handleError());
-  };
+  useEffect(() => {
+    if (localStorage.getItem(LS_SEARCH)) {
+      searchBarParams.set('search', localStorage.getItem(LS_SEARCH) || '');
+      setSearchBarParams(searchBarParams);
+    }
+    return () => {
+      searchBarParams.delete('page');
+      searchBarParams.delete('per');
+      searchBarParams.delete('search');
+      setSearchBarParams(searchBarParams);
+    };
+  });
 
-  onSearch = async (searchValue: string, page: string = '1') => {
-    this.setState({
-      loading: true,
-      people: [],
-      peopleCount: null,
-      searchValue,
-    });
-    await this.SWAPIService.getSWPeople(searchValue, page)
-      .then((res) => {
-        this.setState({
-          people: res.results,
-          loading: false,
-          peopleCount: res.count,
-          searchValue,
-        });
-      })
-      .catch(() => this.handleError);
-  };
-
-  onPageSelect = async (page: string) => {
-    this.setState({ currentPage: page });
-    await this.onSearch(this.state.searchValue, page);
-  };
-
-  private handleError() {
-    this.setState({
-      error: true,
-      loading: false,
-      people: [],
-      peopleCount: null,
-    });
-  }
-
-  handleErrorButtonClick() {
-    this.setState({ error: true });
-  }
-
-  render() {
-    const { people, loading, currentPage } = this.state;
-
-    if (this.state.error) {
-      throw new Error();
+  const addQueryParam = (key: string, value: string) => {
+    if (!value) {
+      searchBarParams.delete(key);
+    } else {
+      searchBarParams.set(key, value);
+    }
+    if (key === 'search') {
+      searchBarParams.delete('page');
+      searchBarParams.delete('per');
     }
 
-    return (
-      <>
-        <div
-          style={{
-            display: 'flex',
-            gap: '8px',
-            marginBottom: '32px',
-          }}
-        >
-          <Search
-            initValue={localStorage.getItem(LS_PEOPLE) || ''}
-            searchValue={this.onSearch}
-            lsName={LS_PEOPLE}
+    setSearchBarParams(searchBarParams);
+  };
+
+  return (
+    <>
+      <Search
+        onSearchValueChange={(searchValue) =>
+          addQueryParam('search', searchValue)
+        }
+        lsName={LS_SEARCH}
+        initValue={localStorage.getItem(LS_SEARCH) || ''}
+      />
+
+      <div style={{ margin: '40px 0' }}>
+        {maxPageAmount > 1 ? (
+          <Pagination
+            maxAmountOfPages={maxPageAmount}
+            onSetCurrentPage={(page) => addQueryParam('page', page.toString())}
+            onSetAmountPerPage={(perPage) => addQueryParam('per', perPage)}
           />
+        ) : null}
+      </div>
 
-          <button className="error" onClick={this.handleErrorButtonClick}>
-            Error
-          </button>
-        </div>
-
-        <div className="pagination">
-          {people?.length >= SEARCH_AMOUNT_PER_PAGE ? (
-            <Pagination
-              page={currentPage}
-              selectAmount={SEARCH_AMOUNT_PER_PAGE}
-              currentPage={this.onPageSelect}
-            />
-          ) : null}
-        </div>
-        <div>
-          {people?.length ? (
-            <PeopleList peopleList={people}></PeopleList>
-          ) : loading ? (
-            <div className="loading">Loading...</div>
-          ) : (
-            <div className="no-results">No results found</div>
-          )}
-        </div>
-      </>
-    );
-  }
-}
+      <div
+        style={
+          id
+            ? {
+                display: 'grid',
+                gridTemplateColumns: '2fr 1fr',
+                gap: '100px',
+                width: '100p%',
+              }
+            : { display: 'block' }
+        }
+      >
+        {data?.length ? (
+          <PeopleList peopleList={data} />
+        ) : loading ? (
+          <div>Loading...</div>
+        ) : (
+          <div>No results</div>
+        )}
+        <Outlet />
+      </div>
+    </>
+  );
+};
 
 export default MainPage;
