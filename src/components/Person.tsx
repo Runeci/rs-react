@@ -1,12 +1,17 @@
 import { SWPerson } from '../services/SWAPI.tsx';
-import { NavLink } from 'react-router-dom';
-import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface PersonProps {
   person: SWPerson;
 }
 
 const Person = ({ person }: PersonProps) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    const id = person.url.split('people/')[1].replace(/\//g, '');
+    navigate(`detail/${id}`);
+  };
   return (
     <div
       style={{
@@ -14,9 +19,10 @@ const Person = ({ person }: PersonProps) => {
         borderRadius: '8px',
       }}
     >
-      <NavLink
-        to={`detail/${person.url.split('people/')[1].replace(/\//g, '')}`}
-      >
+      <div style={{ cursor: 'pointer' }} onClick={handleClick}>
+        {/*<NavLink*/}
+        {/*  to={`detail/${person.url.split('people/')[1].replace(/\//g, '')}`}*/}
+        {/*>*/}
         <h2>{person.name}</h2>
         <p>
           <b>Height:</b> {person.height}
@@ -27,7 +33,8 @@ const Person = ({ person }: PersonProps) => {
         <p>
           <b>Birth year:</b> {person.birth_year}
         </p>
-      </NavLink>
+        {/*</NavLink>*/}
+      </div>
     </div>
   );
 };
