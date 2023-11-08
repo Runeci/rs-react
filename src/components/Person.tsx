@@ -20,9 +20,6 @@ const Person = ({ person }: PersonProps) => {
       }}
     >
       <div style={{ cursor: 'pointer' }} onClick={handleClick}>
-        {/*<NavLink*/}
-        {/*  to={`detail/${person.url.split('people/')[1].replace(/\//g, '')}`}*/}
-        {/*>*/}
         <h2>{person.name}</h2>
         <p>
           <b>Height:</b> {person.height}
@@ -33,7 +30,6 @@ const Person = ({ person }: PersonProps) => {
         <p>
           <b>Birth year:</b> {person.birth_year}
         </p>
-        {/*</NavLink>*/}
       </div>
     </div>
   );

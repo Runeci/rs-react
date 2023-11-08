@@ -33,8 +33,7 @@ const MainPage = () => {
         } else {
           setData(res.results);
         }
-
-        setPageAmount(res.count / DEFAULT_ITEMS_PER_PAGE);
+        setPageAmount(Math.ceil(res.count / DEFAULT_ITEMS_PER_PAGE));
         setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);

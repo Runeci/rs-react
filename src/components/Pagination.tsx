@@ -37,11 +37,24 @@ export function Pagination({
   return (
     <div
       className="pagination"
-      style={{ display: 'flex', width: '50%', gap: '10px' }}
+      style={{
+        display: 'flex',
+        width: '50%',
+        gap: '10px',
+      }}
     >
       <button onClick={goToPrevPage} disabled={currPage === 1}>
         Prev page
       </button>
+      <div
+        style={{
+          display: 'grid',
+          placeItems: 'center',
+          margin: '0 24px',
+        }}
+      >
+        {currPage}
+      </div>
       <button onClick={goToNextPage} disabled={currPage === maxAmountOfPages}>
         Next page
       </button>
@@ -52,6 +65,14 @@ export function Pagination({
         <option value="5">5</option>
         <option value="10">10</option>
       </select>
+      <div
+        style={{
+          display: 'grid',
+          placeItems: 'center',
+        }}
+      >
+        Total pages: {maxAmountOfPages}
+      </div>
     </div>
   );
 }
