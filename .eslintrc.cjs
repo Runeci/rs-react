@@ -21,8 +21,9 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  plugins: ['react-refresh', '@typescript-eslint', 'react', 'react-hooks'],
+  plugins: ['react-refresh', '@typescript-eslint', 'react', 'react-hooks', 'unused-imports'],
   rules: {
+    'unused-imports/no-unused-imports': 'error',
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
     'comma-dangle': ['error', 'only-multiline'],

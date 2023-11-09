@@ -1,25 +1,17 @@
 import { FormEvent } from 'react';
 
 interface SearchProps {
-  onSearchValueChange: (value: string) => void;
-  lsName: string;
-  initValue: string;
+  searchValue: string;
+  onSearchUpdate: (v: string) => void;
 }
 
-export function Search({
-  initValue,
-  lsName,
-  onSearchValueChange,
-}: SearchProps) {
+export function Search({ searchValue, onSearchUpdate }: SearchProps) {
   function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
     const value = formData.get('searchInput') as string;
-    value
-      ? localStorage.setItem(lsName, value)
-      : localStorage.removeItem(lsName);
-    onSearchValueChange(value);
+    onSearchUpdate(value);
   }
 
   return (
@@ -34,7 +26,7 @@ export function Search({
         <input
           className="searchInput"
           name="searchInput"
-          defaultValue={initValue}
+          defaultValue={searchValue}
         ></input>
         <button type="submit">Search</button>
       </form>

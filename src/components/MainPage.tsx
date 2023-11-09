@@ -10,10 +10,17 @@ import { Pagination } from './Pagination.tsx';
 import PeopleList from './PeopleList.tsx';
 import { Outlet, useParams, useSearchParams } from 'react-router-dom';
 import { ListQueryParams } from '../models/enums.tsx';
+import {
+  useSearchContext,
+  useSearchUpdateContext,
+} from './SearchContext.tsx';
 
 const MainPage = () => {
   const SWAPIService = new SWAPI();
+
   const { id } = useParams();
+  const search = useSearchContext();
+  const updateSearch = useSearchUpdateContext();
 
   const [data, setData] = useState<SWPerson[]>([]);
   const [loading, setLoading] = useState(true);
@@ -54,21 +61,12 @@ const MainPage = () => {
     setSearchBarParams(searchBarParams);
   };
 
-  const addSearchParam = (value: string) => {
-    value
-      ? searchBarParams.set(ListQueryParams.Search, value)
-      : searchBarParams.delete(ListQueryParams.Search);
-
-    searchBarParams.set(ListQueryParams.Page, '1');
-    setSearchBarParams(searchBarParams);
-  };
-
   return (
     <>
+      {search}
       <Search
-        onSearchValueChange={(searchValue) => addSearchParam(searchValue)}
-        lsName={LS_SEARCH}
-        initValue={initSearchValue}
+        searchValue={search}
+        onSearchUpdate={(res) => updateSearch(res)}
       />
 
       <div style={{ margin: '40px 0' }}>
