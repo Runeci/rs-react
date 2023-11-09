@@ -1,5 +1,8 @@
-import { useEffect, useState } from 'react';
-import { DEFAULT_ITEMS_PER_PAGE } from '../services/SWAPI.tsx';
+import { useState } from 'react';
+import {} from '../services/SWAPI.tsx';
+import { DEFAULT_ITEMS_PER_PAGE, START_PAGE } from '../models/const.tsx';
+import { useSearchParams } from 'react-router-dom';
+import { ListQueryParams } from '../models/enums.tsx';
 
 interface PaginationProps {
   maxAmountOfPages: number;
@@ -12,27 +15,24 @@ export function Pagination({
   onSetCurrentPage,
   onSetAmountPerPage,
 }: PaginationProps) {
-  const [currPage, setCurrentPage] = useState<number>(1);
+  const [queryParams] = useSearchParams();
+  const [currPage, setCurrentPage] = useState<number>(
+    Number(queryParams.get(ListQueryParams.Page)) ?? START_PAGE
+  );
+  const itemsPerPage =
+    queryParams.get(ListQueryParams.ItemsPerPage) ?? DEFAULT_ITEMS_PER_PAGE;
 
   function goToPrevPage() {
-    if (currPage === 1) return;
     const prevPage = currPage - 1;
     setCurrentPage(prevPage);
-    onSetCurrentPage(currPage);
+    onSetCurrentPage(prevPage);
   }
 
   function goToNextPage() {
-    if (currPage === maxAmountOfPages) return;
     const nextPage = currPage + 1;
     setCurrentPage(nextPage);
     onSetCurrentPage(nextPage);
   }
-
-  useEffect(() => {
-    return () => {
-      setCurrentPage(1);
-    };
-  }, []);
 
   return (
     <div
@@ -59,7 +59,7 @@ export function Pagination({
         Next page
       </button>
       <select
-        defaultValue={DEFAULT_ITEMS_PER_PAGE}
+        defaultValue={itemsPerPage}
         onChange={(e) => onSetAmountPerPage(e.target.value)}
       >
         <option value="5">5</option>

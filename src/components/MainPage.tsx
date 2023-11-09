@@ -1,10 +1,15 @@
 import { useEffect, useState } from 'react';
-import { DEFAULT_ITEMS_PER_PAGE, SWAPI, SWPerson } from '../services/SWAPI.tsx';
-import { LS_SEARCH } from '../models/const.tsx';
+import { SWAPI, SWPerson } from '../services/SWAPI.tsx';
+import {
+  DEFAULT_ITEMS_PER_PAGE,
+  LS_SEARCH,
+  START_PAGE,
+} from '../models/const.tsx';
 import { Search } from './Search.tsx';
 import { Pagination } from './Pagination.tsx';
 import PeopleList from './PeopleList.tsx';
 import { Outlet, useParams, useSearchParams } from 'react-router-dom';
+import { ListQueryParams } from '../models/enums.tsx';
 
 const MainPage = () => {
   const SWAPIService = new SWAPI();
@@ -14,80 +19,68 @@ const MainPage = () => {
   const [loading, setLoading] = useState(true);
   const [maxPageAmount, setPageAmount] = useState(1);
   const [searchBarParams, setSearchBarParams] = useSearchParams();
+  const initSearchValue = localStorage.getItem(LS_SEARCH) || '';
 
   useEffect(() => {
     setLoading(true);
     setData([]);
-    async function fetchData() {
-      const searchValue = searchBarParams.get('search') || '';
-      const pageValue = searchBarParams.get('page') || '1';
-      const perPage = searchBarParams.get('per') || '10';
 
-      try {
-        const res = await SWAPIService.getSWPeople(searchValue, pageValue);
-        if (perPage === '5') {
-          //Due to not suitable API I decided to do it this way -> just get firs 5 items out of
-          // 10(default amount items per page which can not be changed)
-          const data = res.results.splice(0, 5);
-          setData(data);
-        } else {
-          setData(res.results);
-        }
-        setPageAmount(Math.ceil(res.count / DEFAULT_ITEMS_PER_PAGE));
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setLoading(false);
-      }
+    async function fetchData() {
+      const searchValue =
+        searchBarParams.get(ListQueryParams.Search) || initSearchValue || '';
+      const pageValue =
+        searchBarParams.get(ListQueryParams.Page) || START_PAGE.toString();
+      const perPage =
+        searchBarParams.get(ListQueryParams.ItemsPerPage) ||
+        DEFAULT_ITEMS_PER_PAGE.toString();
+
+      await SWAPIService.getSWPeople(searchValue, pageValue)
+        .then((res) => {
+          perPage === '5'
+            ? setData(res.results.splice(0, 5))
+            : setData(res.results);
+          setPageAmount(Math.ceil(res.count / DEFAULT_ITEMS_PER_PAGE));
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
     }
+
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchBarParams]);
 
-  useEffect(() => {
-    if (localStorage.getItem(LS_SEARCH)) {
-      searchBarParams.set('search', localStorage.getItem(LS_SEARCH) || '');
-      setSearchBarParams(searchBarParams);
-    }
-    return () => {
-      searchBarParams.delete('page');
-      searchBarParams.delete('per');
-      searchBarParams.delete('search');
-      setSearchBarParams(searchBarParams);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const addQueryParam = (key: ListQueryParams, value: string) => {
+    searchBarParams.set(key, value);
+    setSearchBarParams(searchBarParams);
+  };
 
-  const addQueryParam = (key: string, value: string) => {
-    if (!value) {
-      searchBarParams.delete(key);
-    } else {
-      searchBarParams.set(key, value);
-    }
-    if (key === 'search') {
-      searchBarParams.delete('page');
-      searchBarParams.delete('per');
-    }
+  const addSearchParam = (value: string) => {
+    value
+      ? searchBarParams.set(ListQueryParams.Search, value)
+      : searchBarParams.delete(ListQueryParams.Search);
 
+    searchBarParams.set(ListQueryParams.Page, '1');
     setSearchBarParams(searchBarParams);
   };
 
   return (
     <>
       <Search
-        onSearchValueChange={(searchValue) =>
-          addQueryParam('search', searchValue)
-        }
+        onSearchValueChange={(searchValue) => addSearchParam(searchValue)}
         lsName={LS_SEARCH}
-        initValue={localStorage.getItem(LS_SEARCH) || ''}
+        initValue={initSearchValue}
       />
 
       <div style={{ margin: '40px 0' }}>
         {maxPageAmount > 1 ? (
           <Pagination
             maxAmountOfPages={maxPageAmount}
-            onSetCurrentPage={(page) => addQueryParam('page', page.toString())}
-            onSetAmountPerPage={(perPage) => addQueryParam('per', perPage)}
+            onSetCurrentPage={(page) =>
+              addQueryParam(ListQueryParams.Page, page.toString())
+            }
+            onSetAmountPerPage={(perPage) =>
+              addQueryParam(ListQueryParams.ItemsPerPage, perPage)
+            }
           />
         ) : null}
       </div>

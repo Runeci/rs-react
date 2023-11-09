@@ -1,5 +1,10 @@
 import { SWPerson } from '../services/SWAPI.tsx';
-import { useNavigate } from 'react-router-dom';
+import {
+  createSearchParams,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
+import { ROUTER_PATHS } from '../main.tsx';
 
 interface PersonProps {
   person: SWPerson;
@@ -7,11 +12,16 @@ interface PersonProps {
 
 const Person = ({ person }: PersonProps) => {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
 
   const handleClick = () => {
     const id = person.url.split('people/')[1].replace(/\//g, '');
-    navigate(`detail/${id}`);
+    navigate({
+      pathname: `${ROUTER_PATHS.detail}/${id}`,
+      search: createSearchParams(params).toString(),
+    });
   };
+
   return (
     <div
       style={{

@@ -1,13 +1,27 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import {
+  createSearchParams,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
 import { SWAPI, SWPerson } from '../services/SWAPI.tsx';
+import { ROUTER_PATHS } from '../main.tsx';
 
-const MyComponent = () => {
+const Details = () => {
+  const navigate = useNavigate();
   const [data, setData] = useState<SWPerson>();
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
+  const [queryParams] = useSearchParams();
   const SWService = new SWAPI();
 
+  const closeDetail = () => {
+    navigate({
+      pathname: ROUTER_PATHS.root,
+      search: createSearchParams(queryParams).toString(),
+    });
+  };
   useEffect(() => {
     if (id) {
       setLoading(true);
@@ -28,9 +42,7 @@ const MyComponent = () => {
           <div>Birth Year: {data?.birth_year}</div>
           <div>Eye Color: {data?.eye_color}</div>
           <div>Mass: {data?.mass}</div>
-          <Link to={'/'}>
-            <button>Close</button>
-          </Link>
+          <button onClick={closeDetail}>Close</button>
         </div>
       ) : loading ? (
         <div>Loading...</div>
@@ -41,4 +53,4 @@ const MyComponent = () => {
   );
 };
 
-export default MyComponent;
+export default Details;

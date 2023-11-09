@@ -1,6 +1,11 @@
 import { SWPeople } from '../services/SWAPI.tsx';
 import Person from './Person.tsx';
-import { useNavigate } from 'react-router-dom';
+import {
+  createSearchParams,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
+import { ROUTER_PATHS } from '../main.tsx';
 
 export interface PeopleListProps {
   peopleList: SWPeople['results'];
@@ -8,9 +13,15 @@ export interface PeopleListProps {
 
 const PeopleList = ({ peopleList }: PeopleListProps) => {
   const navigate = useNavigate();
+  const [queryParams] = useSearchParams();
 
   const closeDetails = (e: React.MouseEvent<HTMLUListElement>) =>
-    e.target === e.currentTarget ? navigate('/') : null;
+    e.target === e.currentTarget
+      ? navigate({
+          pathname: ROUTER_PATHS.root,
+          search: createSearchParams(queryParams).toString(),
+        })
+      : null;
 
   return (
     <>
