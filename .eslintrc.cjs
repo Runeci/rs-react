@@ -21,7 +21,13 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  plugins: ['react-refresh', '@typescript-eslint', 'react', 'react-hooks', 'unused-imports'],
+  plugins: [
+    'react-refresh',
+    '@typescript-eslint',
+    'react',
+    'react-hooks',
+    'unused-imports',
+  ],
   rules: {
     'unused-imports/no-unused-imports': 'error',
     'react-hooks/rules-of-hooks': 'error',

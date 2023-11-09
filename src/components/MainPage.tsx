@@ -10,10 +10,7 @@ import { Pagination } from './Pagination.tsx';
 import PeopleList from './PeopleList.tsx';
 import { Outlet, useParams, useSearchParams } from 'react-router-dom';
 import { ListQueryParams } from '../models/enums.tsx';
-import {
-  useSearchContext,
-  useSearchUpdateContext,
-} from './SearchContext.tsx';
+import { useSearchContext, useSearchUpdateContext } from './SearchContext.tsx';
 
 const MainPage = () => {
   const SWAPIService = new SWAPI();
