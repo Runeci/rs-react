@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import {} from '../services/SWAPI.tsx';
 import { DEFAULT_ITEMS_PER_PAGE, START_PAGE } from '../models/const.tsx';
 import { useSearchParams } from 'react-router-dom';
 import { ListQueryParams } from '../models/enums.tsx';
@@ -17,10 +16,10 @@ export function Pagination({
 }: PaginationProps) {
   const [queryParams] = useSearchParams();
   const [currPage, setCurrentPage] = useState<number>(
-    Number(queryParams.get(ListQueryParams.Page)) ?? START_PAGE
+    Number(queryParams.get(ListQueryParams.Page)) || START_PAGE
   );
   const itemsPerPage =
-    queryParams.get(ListQueryParams.ItemsPerPage) ?? DEFAULT_ITEMS_PER_PAGE;
+    queryParams.get(ListQueryParams.ItemsPerPage) || DEFAULT_ITEMS_PER_PAGE;
 
   function goToPrevPage() {
     const prevPage = currPage - 1;
@@ -33,6 +32,8 @@ export function Pagination({
     setCurrentPage(nextPage);
     onSetCurrentPage(nextPage);
   }
+
+  if (maxAmountOfPages <= 1) return null;
 
   return (
     <div

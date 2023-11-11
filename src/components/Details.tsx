@@ -6,7 +6,7 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 import { SWAPI, SWPerson } from '../services/SWAPI.tsx';
-import { ROUTER_PATHS } from '../main.tsx';
+import { ROUTER_PATHS } from '../router/router.tsx';
 
 const Details = () => {
   const navigate = useNavigate();
@@ -22,6 +22,7 @@ const Details = () => {
       search: createSearchParams(queryParams).toString(),
     });
   };
+
   useEffect(() => {
     if (id) {
       setLoading(true);
@@ -37,7 +38,7 @@ const Details = () => {
     <>
       {data ? (
         <div>
-          <h1>Detail {data.name}</h1>
+          <h1 data-testid="detail-name">Detail {data.name}</h1>
           <div>Gender: {data?.gender ? data?.gender : 'unknown'}</div>
           <div>Birth Year: {data?.birth_year}</div>
           <div>Eye Color: {data?.eye_color}</div>

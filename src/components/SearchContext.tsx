@@ -7,8 +7,9 @@ export const SearchContext = createContext<string>(
   localStorage.getItem(LS_SEARCH) || ''
 );
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const UpdateSearchContext = createContext((val) => {});
+export const UpdateSearchContext = createContext((val: string) => {
+  val;
+});
 
 export function SearchProvider({ children }: PropsWithChildren) {
   const [search, setSearch] = useState<string>(

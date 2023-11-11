@@ -1,57 +1,19 @@
-import { useEffect, useState } from 'react';
-import { SWAPI, SWPerson } from '../services/SWAPI.tsx';
-import {
-  DEFAULT_ITEMS_PER_PAGE,
-  LS_SEARCH,
-  START_PAGE,
-} from '../models/const.tsx';
+import { useContext } from 'react';
 import { Search } from './Search.tsx';
 import { Pagination } from './Pagination.tsx';
-import PeopleList from './PeopleList.tsx';
-import { Outlet, useParams, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { ListQueryParams } from '../models/enums.tsx';
-import { useSearchContext, useSearchUpdateContext } from './SearchContext.tsx';
+import { SearchContext, UpdateSearchContext } from './SearchContext.tsx';
+import PeopleList from './PeopleList.tsx';
+import { useFetchPeopleList } from '../custom-hooks/FetchPeopleList.hook.tsx';
 
 const MainPage = () => {
-  const SWAPIService = new SWAPI();
-
-  const { id } = useParams();
-  const search = useSearchContext();
-  const updateSearch = useSearchUpdateContext();
-
-  const [data, setData] = useState<SWPerson[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [maxPageAmount, setPageAmount] = useState(1);
   const [searchBarParams, setSearchBarParams] = useSearchParams();
-  const initSearchValue = localStorage.getItem(LS_SEARCH) || '';
+  const { id } = useParams();
 
-  useEffect(() => {
-    setLoading(true);
-    setData([]);
-
-    async function fetchData() {
-      const searchValue =
-        searchBarParams.get(ListQueryParams.Search) || initSearchValue || '';
-      const pageValue =
-        searchBarParams.get(ListQueryParams.Page) || START_PAGE.toString();
-      const perPage =
-        searchBarParams.get(ListQueryParams.ItemsPerPage) ||
-        DEFAULT_ITEMS_PER_PAGE.toString();
-
-      await SWAPIService.getSWPeople(searchValue, pageValue)
-        .then((res) => {
-          perPage === '5'
-            ? setData(res.results.splice(0, 5))
-            : setData(res.results);
-          setPageAmount(Math.ceil(res.count / DEFAULT_ITEMS_PER_PAGE));
-          setLoading(false);
-        })
-        .catch(() => setLoading(false));
-    }
-
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchBarParams]);
+  const search = useContext(SearchContext);
+  const updateSearch = useContext(UpdateSearchContext);
+  const { maxPageAmount } = useFetchPeopleList();
 
   const addQueryParam = (key: ListQueryParams, value: string) => {
     searchBarParams.set(key, value);
@@ -60,24 +22,21 @@ const MainPage = () => {
 
   return (
     <>
-      {search}
       <Search
         searchValue={search}
         onSearchUpdate={(res) => updateSearch(res)}
       />
 
       <div style={{ margin: '40px 0' }}>
-        {maxPageAmount > 1 ? (
-          <Pagination
-            maxAmountOfPages={maxPageAmount}
-            onSetCurrentPage={(page) =>
-              addQueryParam(ListQueryParams.Page, page.toString())
-            }
-            onSetAmountPerPage={(perPage) =>
-              addQueryParam(ListQueryParams.ItemsPerPage, perPage)
-            }
-          />
-        ) : null}
+        <Pagination
+          maxAmountOfPages={maxPageAmount}
+          onSetCurrentPage={(page) =>
+            addQueryParam(ListQueryParams.Page, page.toString())
+          }
+          onSetAmountPerPage={(perPage) =>
+            addQueryParam(ListQueryParams.ItemsPerPage, perPage)
+          }
+        />
       </div>
 
       <div
@@ -92,14 +51,7 @@ const MainPage = () => {
             : { display: 'block' }
         }
       >
-        {data?.length ? (
-          <PeopleList peopleList={data} />
-        ) : loading ? (
-          <div>Loading...</div>
-        ) : (
-          <div>No results</div>
-        )}
-        <Outlet />
+        <PeopleList />
       </div>
     </>
   );
