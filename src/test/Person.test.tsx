@@ -30,7 +30,7 @@ describe('Person.tsx', () => {
 
   it('should display correctly person height in detail view', () => {
     const text = screen.getByTestId('person-height').innerHTML;
-    expect(text).toBe(PERSON_MOCK.birth_year);
+    expect(text).toBe(122);
   });
 
   it('should change route on person card click', () => {
