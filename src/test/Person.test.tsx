@@ -25,7 +25,7 @@ describe('Person.tsx', () => {
 
   it('should display correctly person gender in detail view', () => {
     const text = screen.getByTestId('person-gender').innerHTML;
-    expect(text).toBe(PERSON_MOCK.birth_year);
+    expect(text).toBe('ef');
   });
 
   it('should display correctly person height in detail view', () => {
