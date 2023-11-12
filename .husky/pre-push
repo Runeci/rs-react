@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-ng test --source-map=false --browsers=ChromeHeadless --watch=false
+npm run test

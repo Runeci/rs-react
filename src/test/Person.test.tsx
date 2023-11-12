@@ -25,12 +25,12 @@ describe('Person.tsx', () => {
 
   it('should display correctly person gender in detail view', () => {
     const text = screen.getByTestId('person-gender').innerHTML;
-    expect(text).toBe('ef');
+    expect(text).toBe(PERSON_MOCK.gender);
   });
 
   it('should display correctly person height in detail view', () => {
     const text = screen.getByTestId('person-height').innerHTML;
-    expect(text).toBe(122);
+    expect(text).toBe(PERSON_MOCK.height);
   });
 
   it('should change route on person card click', () => {
