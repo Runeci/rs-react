@@ -1,12 +1,27 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import {
+  createSearchParams,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
 import { SWAPI, SWPerson } from '../services/SWAPI.tsx';
+import { ROUTER_PATHS } from '../router/router.tsx';
 
-const MyComponent = () => {
+const Details = () => {
+  const navigate = useNavigate();
   const [data, setData] = useState<SWPerson>();
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
+  const [queryParams] = useSearchParams();
   const SWService = new SWAPI();
+
+  const closeDetail = () => {
+    navigate({
+      pathname: ROUTER_PATHS.root,
+      search: createSearchParams(queryParams).toString(),
+    });
+  };
 
   useEffect(() => {
     if (id) {
@@ -22,18 +37,18 @@ const MyComponent = () => {
   return (
     <>
       {data ? (
-        <div>
-          <h1>Detail {data.name}</h1>
+        <div className="detail-container" data-testid="detail-container">
+          <h1 data-testid="detail-name">Detail {data.name}</h1>
           <div>Gender: {data?.gender ? data?.gender : 'unknown'}</div>
           <div>Birth Year: {data?.birth_year}</div>
           <div>Eye Color: {data?.eye_color}</div>
           <div>Mass: {data?.mass}</div>
-          <Link to={'/'}>
-            <button>Close</button>
-          </Link>
+          <button data-testid="detail-close-btn" onClick={closeDetail}>
+            Close
+          </button>
         </div>
       ) : loading ? (
-        <div>Loading...</div>
+        <div>Details are loading...</div>
       ) : (
         <div>No details</div>
       )}
@@ -41,4 +56,4 @@ const MyComponent = () => {
   );
 };
 
-export default MyComponent;
+export default Details;

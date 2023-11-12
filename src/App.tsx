@@ -1,20 +1,18 @@
 import './App.css';
 import { ErrorBoundary } from './helpers/ErrorBoundary.tsx';
 import MainPage from './components/MainPage.tsx';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Details from './components/Details.tsx';
+import { SearchProvider } from './components/SearchContext.tsx';
+import PeopleProvider from './components/PeopleListContext.tsx';
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <ErrorBoundary>
-        <Routes>
-          <Route path="/" element={<MainPage />}>
-            <Route path="detail/:id" element={<Details />}></Route>
-          </Route>
-        </Routes>
-      </ErrorBoundary>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <SearchProvider>
+        <PeopleProvider>
+          <MainPage />
+        </PeopleProvider>
+      </SearchProvider>
+    </ErrorBoundary>
   );
 };
 

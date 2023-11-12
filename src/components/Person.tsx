@@ -1,5 +1,10 @@
 import { SWPerson } from '../services/SWAPI.tsx';
-import { useNavigate } from 'react-router-dom';
+import {
+  createSearchParams,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
+import { ROUTER_PATHS } from '../router/router.tsx';
 
 interface PersonProps {
   person: SWPerson;
@@ -7,11 +12,16 @@ interface PersonProps {
 
 const Person = ({ person }: PersonProps) => {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
 
   const handleClick = () => {
     const id = person.url.split('people/')[1].replace(/\//g, '');
-    navigate(`detail/${id}`);
+    navigate({
+      pathname: `${ROUTER_PATHS.detail}/${id}`,
+      search: createSearchParams(params).toString(),
+    });
   };
+
   return (
     <div
       style={{
@@ -19,16 +29,23 @@ const Person = ({ person }: PersonProps) => {
         borderRadius: '8px',
       }}
     >
-      <div style={{ cursor: 'pointer' }} onClick={handleClick}>
-        <h2>{person.name}</h2>
+      <div
+        data-testid="person-container"
+        style={{ cursor: 'pointer' }}
+        onClick={handleClick}
+      >
+        <h2 data-testid="person-name">{person.name}</h2>
         <p>
-          <b>Height:</b> {person.height}
+          <b>Height:</b>
+          <span data-testid="person-height">{person.height}</span>
         </p>
         <p>
-          <b>Gender:</b> {person.gender}
+          <b>Gender:</b>
+          <span data-testid="person-gender">{person.gender}</span>
         </p>
         <p>
-          <b>Birth year:</b> {person.birth_year}
+          <b>Birth year:</b>
+          <span data-testid="person-birth-year">{person.birth_year}</span>
         </p>
       </div>
     </div>

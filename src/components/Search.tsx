@@ -1,25 +1,16 @@
-import { FormEvent } from 'react';
+import { FormEvent, useContext } from 'react';
+import { SearchContext, UpdateSearchContext } from './SearchContext.tsx';
 
-interface SearchProps {
-  onSearchValueChange: (value: string) => void;
-  lsName: string;
-  initValue: string;
-}
+export function Search() {
+  const search = useContext(SearchContext);
+  const updateSearch = useContext(UpdateSearchContext);
 
-export function Search({
-  initValue,
-  lsName,
-  onSearchValueChange,
-}: SearchProps) {
   function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
     const value = formData.get('searchInput') as string;
-    value
-      ? localStorage.setItem(lsName, value)
-      : localStorage.removeItem(lsName);
-    onSearchValueChange(value);
+    updateSearch(value);
   }
 
   return (
@@ -32,11 +23,15 @@ export function Search({
         }}
       >
         <input
+          type="search"
+          data-testid="search-input"
           className="searchInput"
           name="searchInput"
-          defaultValue={initValue}
+          defaultValue={search}
         ></input>
-        <button type="submit">Search</button>
+        <button data-testid="search-button" type="submit">
+          Search
+        </button>
       </form>
     </>
   );

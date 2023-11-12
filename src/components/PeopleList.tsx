@@ -1,33 +1,39 @@
-import { SWPeople } from '../services/SWAPI.tsx';
 import Person from './Person.tsx';
-import { useNavigate } from 'react-router-dom';
+import {
+  createSearchParams,
+  Outlet,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
+import { ROUTER_PATHS } from '../router/router.tsx';
+import { useContext } from 'react';
+import { PeopleListContext } from './PeopleListContext.tsx';
 
-export interface PeopleListProps {
-  peopleList: SWPeople['results'];
-}
-
-const PeopleList = ({ peopleList }: PeopleListProps) => {
+const PeopleList = () => {
   const navigate = useNavigate();
+  const [queryParams] = useSearchParams();
+  const { isLoading, results } = useContext(PeopleListContext);
 
   const closeDetails = (e: React.MouseEvent<HTMLUListElement>) =>
-    e.target === e.currentTarget ? navigate('/') : null;
+    e.target === e.currentTarget
+      ? navigate({
+          pathname: ROUTER_PATHS.root,
+          search: createSearchParams(queryParams).toString(),
+        })
+      : null;
+
+  if (isLoading) return <div>Loading...</div>;
+  if (!results.length)
+    return <div data-testid="people-no-results">No results</div>;
 
   return (
     <>
-      <ul
-        onClick={closeDetails}
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr)',
-          gap: '24px',
-          border: '1px solid white',
-          padding: '10px',
-        }}
-      >
-        {peopleList.map((person) => (
+      <ul className="people-list" onClick={closeDetails}>
+        {results.map((person) => (
           <Person person={person} key={person.name} />
         ))}
       </ul>
+      <Outlet />
     </>
   );
 };

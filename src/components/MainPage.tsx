@@ -1,95 +1,23 @@
-import { useEffect, useState } from 'react';
-import { DEFAULT_ITEMS_PER_PAGE, SWAPI, SWPerson } from '../services/SWAPI.tsx';
-import { LS_SEARCH } from '../models/const.tsx';
 import { Search } from './Search.tsx';
 import { Pagination } from './Pagination.tsx';
+import { useParams } from 'react-router-dom';
+import { ListQueryParams } from '../models/enums.tsx';
 import PeopleList from './PeopleList.tsx';
-import { Outlet, useParams, useSearchParams } from 'react-router-dom';
+import { useFetchPeopleList } from '../custom-hooks/FetchPeopleList.hook.tsx';
 
 const MainPage = () => {
-  const SWAPIService = new SWAPI();
   const { id } = useParams();
-
-  const [data, setData] = useState<SWPerson[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [maxPageAmount, setPageAmount] = useState(1);
-  const [searchBarParams, setSearchBarParams] = useSearchParams();
-
-  useEffect(() => {
-    setLoading(true);
-    setData([]);
-    async function fetchData() {
-      const searchValue = searchBarParams.get('search') || '';
-      const pageValue = searchBarParams.get('page') || '1';
-      const perPage = searchBarParams.get('per') || '10';
-
-      try {
-        const res = await SWAPIService.getSWPeople(searchValue, pageValue);
-        if (perPage === '5') {
-          //Due to not suitable API I decided to do it this way -> just get firs 5 items out of
-          // 10(default amount items per page which can not be changed)
-          const data = res.results.splice(0, 5);
-          setData(data);
-        } else {
-          setData(res.results);
-        }
-        setPageAmount(Math.ceil(res.count / DEFAULT_ITEMS_PER_PAGE));
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setLoading(false);
-      }
-    }
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchBarParams]);
-
-  useEffect(() => {
-    if (localStorage.getItem(LS_SEARCH)) {
-      searchBarParams.set('search', localStorage.getItem(LS_SEARCH) || '');
-      setSearchBarParams(searchBarParams);
-    }
-    return () => {
-      searchBarParams.delete('page');
-      searchBarParams.delete('per');
-      searchBarParams.delete('search');
-      setSearchBarParams(searchBarParams);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const addQueryParam = (key: string, value: string) => {
-    if (!value) {
-      searchBarParams.delete(key);
-    } else {
-      searchBarParams.set(key, value);
-    }
-    if (key === 'search') {
-      searchBarParams.delete('page');
-      searchBarParams.delete('per');
-    }
-
-    setSearchBarParams(searchBarParams);
-  };
+  const { maxPageAmount } = useFetchPeopleList();
 
   return (
     <>
-      <Search
-        onSearchValueChange={(searchValue) =>
-          addQueryParam('search', searchValue)
-        }
-        lsName={LS_SEARCH}
-        initValue={localStorage.getItem(LS_SEARCH) || ''}
-      />
+      <Search />
 
       <div style={{ margin: '40px 0' }}>
-        {maxPageAmount > 1 ? (
-          <Pagination
-            maxAmountOfPages={maxPageAmount}
-            onSetCurrentPage={(page) => addQueryParam('page', page.toString())}
-            onSetAmountPerPage={(perPage) => addQueryParam('per', perPage)}
-          />
-        ) : null}
+        <Pagination
+          maxAmountOfPages={maxPageAmount}
+          queryKey={ListQueryParams.Page}
+        />
       </div>
 
       <div
@@ -104,14 +32,7 @@ const MainPage = () => {
             : { display: 'block' }
         }
       >
-        {data?.length ? (
-          <PeopleList peopleList={data} />
-        ) : loading ? (
-          <div>Loading...</div>
-        ) : (
-          <div>No results</div>
-        )}
-        <Outlet />
+        <PeopleList />
       </div>
     </>
   );

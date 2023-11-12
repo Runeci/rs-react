@@ -1,5 +1,4 @@
 export const API_URL = 'https://swapi.dev/api/people/';
-export const DEFAULT_ITEMS_PER_PAGE = 10;
 
 export interface SWPeople {
   count: number;

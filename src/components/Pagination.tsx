@@ -1,38 +1,39 @@
-import { useEffect, useState } from 'react';
-import { DEFAULT_ITEMS_PER_PAGE } from '../services/SWAPI.tsx';
+import { useState } from 'react';
+import { DEFAULT_ITEMS_PER_PAGE, START_PAGE } from '../models/const.tsx';
+import { useSearchParams } from 'react-router-dom';
+import { ListQueryParams } from '../models/enums.tsx';
 
 interface PaginationProps {
   maxAmountOfPages: number;
-  onSetCurrentPage: (curPage: number) => void;
-  onSetAmountPerPage: (amount: string) => void;
+  queryKey: string;
 }
 
-export function Pagination({
-  maxAmountOfPages,
-  onSetCurrentPage,
-  onSetAmountPerPage,
-}: PaginationProps) {
-  const [currPage, setCurrentPage] = useState<number>(1);
+export function Pagination({ maxAmountOfPages, queryKey }: PaginationProps) {
+  const [queryParams, setQueryParams] = useSearchParams();
+  const [currPage, setCurrentPage] = useState<number>(
+    Number(queryParams.get(ListQueryParams.Page)) || START_PAGE
+  );
+  const itemsPerPage =
+    queryParams.get(ListQueryParams.ItemsPerPage) || DEFAULT_ITEMS_PER_PAGE;
+
+  const addQueryParam = (key: string, value: string) => {
+    queryParams.set(key, value);
+    setQueryParams(queryParams);
+  };
 
   function goToPrevPage() {
-    if (currPage === 1) return;
     const prevPage = currPage - 1;
     setCurrentPage(prevPage);
-    onSetCurrentPage(currPage);
+    addQueryParam(queryKey, prevPage.toString());
   }
 
   function goToNextPage() {
-    if (currPage === maxAmountOfPages) return;
     const nextPage = currPage + 1;
     setCurrentPage(nextPage);
-    onSetCurrentPage(nextPage);
+    addQueryParam(queryKey, nextPage.toString());
   }
 
-  useEffect(() => {
-    return () => {
-      setCurrentPage(1);
-    };
-  }, []);
+  if (maxAmountOfPages <= 1) return null;
 
   return (
     <div
@@ -52,6 +53,7 @@ export function Pagination({
           placeItems: 'center',
           margin: '0 24px',
         }}
+        data-testid="pagination-curr-page"
       >
         {currPage}
       </div>
@@ -59,8 +61,10 @@ export function Pagination({
         Next page
       </button>
       <select
-        defaultValue={DEFAULT_ITEMS_PER_PAGE}
-        onChange={(e) => onSetAmountPerPage(e.target.value)}
+        defaultValue={itemsPerPage}
+        onChange={(e) =>
+          addQueryParam(ListQueryParams.ItemsPerPage, e.target.value)
+        }
       >
         <option value="5">5</option>
         <option value="10">10</option>
