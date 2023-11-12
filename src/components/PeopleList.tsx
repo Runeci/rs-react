@@ -23,7 +23,8 @@ const PeopleList = () => {
       : null;
 
   if (isLoading) return <div>Loading...</div>;
-  if (!results.length) return <div>No results</div>;
+  if (!results.length)
+    return <div data-testid="people-no-results">No results</div>;
 
   return (
     <>

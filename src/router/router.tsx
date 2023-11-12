@@ -14,12 +14,9 @@ export const ROUTER_PATHS = {
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route
-      path={ROUTER_PATHS.root}
-      element={<App />}
-      errorElement={<NoPageFound />}
-    >
-      <Route path={ROUTER_PATHS.detail + '/:id'} element={<Details />}></Route>
+    <Route path={ROUTER_PATHS.root} element={<App />}>
+      <Route path={ROUTER_PATHS.detail + '/:id'} element={<Details />} />
+      <Route path="*" element={<NoPageFound />} />
     </Route>
   )
 );

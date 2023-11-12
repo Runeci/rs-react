@@ -37,16 +37,18 @@ const Details = () => {
   return (
     <>
       {data ? (
-        <div>
+        <div className="detail-container" data-testid="detail-container">
           <h1 data-testid="detail-name">Detail {data.name}</h1>
           <div>Gender: {data?.gender ? data?.gender : 'unknown'}</div>
           <div>Birth Year: {data?.birth_year}</div>
           <div>Eye Color: {data?.eye_color}</div>
           <div>Mass: {data?.mass}</div>
-          <button onClick={closeDetail}>Close</button>
+          <button data-testid="detail-close-btn" onClick={closeDetail}>
+            Close
+          </button>
         </div>
       ) : loading ? (
-        <div>Loading...</div>
+        <div>Details are loading...</div>
       ) : (
         <div>No details</div>
       )}

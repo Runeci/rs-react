@@ -5,32 +5,32 @@ import { ListQueryParams } from '../models/enums.tsx';
 
 interface PaginationProps {
   maxAmountOfPages: number;
-  onSetCurrentPage: (curPage: number) => void;
-  onSetAmountPerPage: (amount: string) => void;
+  queryKey: string;
 }
 
-export function Pagination({
-  maxAmountOfPages,
-  onSetCurrentPage,
-  onSetAmountPerPage,
-}: PaginationProps) {
-  const [queryParams] = useSearchParams();
+export function Pagination({ maxAmountOfPages, queryKey }: PaginationProps) {
+  const [queryParams, setQueryParams] = useSearchParams();
   const [currPage, setCurrentPage] = useState<number>(
     Number(queryParams.get(ListQueryParams.Page)) || START_PAGE
   );
   const itemsPerPage =
     queryParams.get(ListQueryParams.ItemsPerPage) || DEFAULT_ITEMS_PER_PAGE;
 
+  const addQueryParam = (key: string, value: string) => {
+    queryParams.set(key, value);
+    setQueryParams(queryParams);
+  };
+
   function goToPrevPage() {
     const prevPage = currPage - 1;
     setCurrentPage(prevPage);
-    onSetCurrentPage(prevPage);
+    addQueryParam(queryKey, prevPage.toString());
   }
 
   function goToNextPage() {
     const nextPage = currPage + 1;
     setCurrentPage(nextPage);
-    onSetCurrentPage(nextPage);
+    addQueryParam(queryKey, nextPage.toString());
   }
 
   if (maxAmountOfPages <= 1) return null;
@@ -53,6 +53,7 @@ export function Pagination({
           placeItems: 'center',
           margin: '0 24px',
         }}
+        data-testid="pagination-curr-page"
       >
         {currPage}
       </div>
@@ -61,7 +62,9 @@ export function Pagination({
       </button>
       <select
         defaultValue={itemsPerPage}
-        onChange={(e) => onSetAmountPerPage(e.target.value)}
+        onChange={(e) =>
+          addQueryParam(ListQueryParams.ItemsPerPage, e.target.value)
+        }
       >
         <option value="5">5</option>
         <option value="10">10</option>
