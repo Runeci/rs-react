@@ -1,13 +1,23 @@
 import { Search } from './Search.tsx';
 import { Pagination } from './Pagination.tsx';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { ListQueryParams } from '../models/enums.tsx';
 import PeopleList from './PeopleList.tsx';
-import { useFetchPeopleList } from '../custom-hooks/FetchPeopleList.hook.tsx';
+import { useGetPeopleInfoQuery } from '../services/apiSlice.tsx';
+import { useSelector } from 'react-redux';
+import { selectSearch } from '../store/searchSlice.tsx';
+import { DEFAULT_ITEMS_PER_PAGE, START_PAGE } from '../models/const.tsx';
 
 const MainPage = () => {
   const { id } = useParams();
-  const { maxPageAmount } = useFetchPeopleList();
+  const [queryParams] = useSearchParams();
+
+  const search = useSelector(selectSearch);
+  const page = queryParams.get(ListQueryParams.Page) || START_PAGE.toString();
+  const { data: people } = useGetPeopleInfoQuery({
+    page,
+    search,
+  });
 
   return (
     <>
@@ -15,7 +25,7 @@ const MainPage = () => {
 
       <div style={{ margin: '40px 0' }}>
         <Pagination
-          maxAmountOfPages={maxPageAmount}
+          maxAmountOfPages={Math.ceil(people?.count / DEFAULT_ITEMS_PER_PAGE)}
           queryKey={ListQueryParams.Page}
         />
       </div>

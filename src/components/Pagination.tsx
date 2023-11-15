@@ -1,7 +1,12 @@
 import { useState } from 'react';
-import { DEFAULT_ITEMS_PER_PAGE, START_PAGE } from '../models/const.tsx';
+import { START_PAGE } from '../models/const.tsx';
 import { useSearchParams } from 'react-router-dom';
 import { ListQueryParams } from '../models/enums.tsx';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  changePerPage,
+  selectItemsPerPage,
+} from '../store/viewPerPageSlice.tsx';
 
 interface PaginationProps {
   maxAmountOfPages: number;
@@ -9,12 +14,13 @@ interface PaginationProps {
 }
 
 export function Pagination({ maxAmountOfPages, queryKey }: PaginationProps) {
+  const dispatch = useDispatch();
+  const itemsPerPage = useSelector(selectItemsPerPage);
+
   const [queryParams, setQueryParams] = useSearchParams();
   const [currPage, setCurrentPage] = useState<number>(
     Number(queryParams.get(ListQueryParams.Page)) || START_PAGE
   );
-  const itemsPerPage =
-    queryParams.get(ListQueryParams.ItemsPerPage) || DEFAULT_ITEMS_PER_PAGE;
 
   const addQueryParam = (key: string, value: string) => {
     queryParams.set(key, value);
@@ -33,7 +39,12 @@ export function Pagination({ maxAmountOfPages, queryKey }: PaginationProps) {
     addQueryParam(queryKey, nextPage.toString());
   }
 
-  if (maxAmountOfPages <= 1) return null;
+  function addSavePerPageQuery(value: string) {
+    addQueryParam(ListQueryParams.ItemsPerPage, value);
+    dispatch(changePerPage(value));
+  }
+
+  if (maxAmountOfPages <= 1 || !maxAmountOfPages) return null;
 
   return (
     <div
@@ -62,9 +73,7 @@ export function Pagination({ maxAmountOfPages, queryKey }: PaginationProps) {
       </button>
       <select
         defaultValue={itemsPerPage}
-        onChange={(e) =>
-          addQueryParam(ListQueryParams.ItemsPerPage, e.target.value)
-        }
+        onChange={(e) => addSavePerPageQuery(e.target.value)}
       >
         <option value="5">5</option>
         <option value="10">10</option>

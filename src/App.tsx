@@ -1,17 +1,16 @@
 import './App.css';
 import { ErrorBoundary } from './helpers/ErrorBoundary.tsx';
 import MainPage from './components/MainPage.tsx';
-import { SearchProvider } from './components/SearchContext.tsx';
-import PeopleProvider from './components/PeopleListContext.tsx';
+
+import { Provider } from 'react-redux';
+import store from './store/store.tsx';
 
 const App = () => {
   return (
     <ErrorBoundary>
-      <SearchProvider>
-        <PeopleProvider>
-          <MainPage />
-        </PeopleProvider>
-      </SearchProvider>
+      <Provider store={store}>
+        <MainPage />
+      </Provider>
     </ErrorBoundary>
   );
 };

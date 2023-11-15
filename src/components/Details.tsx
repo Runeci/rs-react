@@ -1,20 +1,36 @@
-import { useEffect, useState } from 'react';
 import {
   createSearchParams,
   useNavigate,
   useParams,
   useSearchParams,
 } from 'react-router-dom';
-import { SWAPI, SWPerson } from '../services/SWAPI.tsx';
 import { ROUTER_PATHS } from '../router/router.tsx';
+import { useGetPersonDetailQuery } from '../services/apiSlice.tsx';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLoadingFlagDetails } from '../store/loadingFlagDetails.tsx';
 
 const Details = () => {
   const navigate = useNavigate();
-  const [data, setData] = useState<SWPerson>();
-  const [loading, setLoading] = useState(true);
   const { id } = useParams();
   const [queryParams] = useSearchParams();
-  const SWService = new SWAPI();
+  const dispatchAction = useDispatch();
+  const detailsAreLoading = useSelector(setLoadingFlagDetails);
+
+  const {
+    data: detail,
+    isSuccess,
+    isFetching,
+    isError,
+  } = useGetPersonDetailQuery(id!);
+
+  useEffect(() => {
+    if (isFetching) {
+      dispatchAction(setLoadingFlagDetails(true));
+    } else {
+      dispatchAction(setLoadingFlagDetails(false));
+    }
+  }, [isFetching, dispatchAction]);
 
   const closeDetail = () => {
     navigate({
@@ -23,37 +39,28 @@ const Details = () => {
     });
   };
 
-  useEffect(() => {
-    if (id) {
-      setLoading(true);
-      setData(undefined);
-      SWService.getPersonDetail(id).then((r) => {
-        setData(r);
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  let content;
 
-  return (
-    <>
-      {data ? (
-        <div className="detail-container" data-testid="detail-container">
-          <h1 data-testid="detail-name">Detail {data.name}</h1>
-          <div>Gender: {data?.gender ? data?.gender : 'unknown'}</div>
-          <div>Birth Year: {data?.birth_year}</div>
-          <div>Eye Color: {data?.eye_color}</div>
-          <div>Mass: {data?.mass}</div>
-          <button data-testid="detail-close-btn" onClick={closeDetail}>
-            Close
-          </button>
-        </div>
-      ) : loading ? (
-        <div>Details are loading...</div>
-      ) : (
-        <div>No details</div>
-      )}
-    </>
-  );
+  if (detailsAreLoading) {
+    content = <div>Details are loading...</div>;
+  } else if (isSuccess) {
+    content = (
+      <div className="detail-container" data-testid="detail-container">
+        <h1 data-testid="detail-name">Detail {detail.name}</h1>
+        <div>Gender: {detail?.gender ? detail?.gender : 'unknown'}</div>
+        <div>Birth Year: {detail?.birth_year}</div>
+        <div>Eye Color: {detail?.eye_color}</div>
+        <div>Mass: {detail?.mass}</div>
+        <button data-testid="detail-close-btn" onClick={closeDetail}>
+          Close
+        </button>
+      </div>
+    );
+  } else if (isError) {
+    content = <div>No details. Something went wrong</div>;
+  }
+
+  return <>{content}</>;
 };
 
 export default Details;

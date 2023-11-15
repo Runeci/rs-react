@@ -6,13 +6,43 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 import { ROUTER_PATHS } from '../router/router.tsx';
-import { useContext } from 'react';
-import { PeopleListContext } from './PeopleListContext.tsx';
+import { SWPerson, useGetPeopleInfoQuery } from '../services/apiSlice.tsx';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectSearch } from '../store/searchSlice.tsx';
+import { ListQueryParams } from '../models/enums.tsx';
+import { START_PAGE } from '../models/const.tsx';
+import {
+  selectPeopleLoadingFlag,
+  setLoadingFlagPeople,
+} from '../store/loadingFlagPeopleSlice.tsx';
+import { useEffect } from 'react';
 
 const PeopleList = () => {
   const navigate = useNavigate();
+
   const [queryParams] = useSearchParams();
-  const { isLoading, results } = useContext(PeopleListContext);
+  const page = queryParams.get(ListQueryParams.Page) || START_PAGE.toString();
+
+  const dispatchAction = useDispatch();
+  const isLoadingPeopleList = useSelector(selectPeopleLoadingFlag);
+  const search = useSelector(selectSearch);
+  const {
+    data: people,
+    isFetching,
+    isSuccess,
+    error,
+  } = useGetPeopleInfoQuery({
+    page,
+    search,
+  });
+
+  useEffect(() => {
+    if (isFetching) {
+      dispatchAction(setLoadingFlagPeople(true));
+    } else {
+      dispatchAction(setLoadingFlagPeople(false));
+    }
+  }, [isFetching, dispatchAction]); // I really do not see the point doing it in a such way, but task needs to be done
 
   const closeDetails = (e: React.MouseEvent<HTMLUListElement>) =>
     e.target === e.currentTarget
@@ -22,19 +52,31 @@ const PeopleList = () => {
         })
       : null;
 
-  if (isLoading) return <div>Loading...</div>;
-  if (!results.length)
-    return <div data-testid="people-no-results">No results</div>;
+  let content;
 
-  return (
-    <>
+  if (isLoadingPeopleList) {
+    content = <div>Loading...</div>;
+  } else if (isSuccess) {
+    content = (
       <ul className="people-list" onClick={closeDetails}>
-        {results.map((person) => (
+        {people.results.map((person: SWPerson) => (
           <Person person={person} key={person.name} />
         ))}
       </ul>
+    );
+  } else if (error) {
+    if ('status' in error && error.status === 404) {
+      content = <div data-testid="people-no-results">No results found</div>;
+    } else {
+      content = <div>Error loading data. Try again</div>;
+    }
+  }
+  return (
+    <>
+      {content}
       <Outlet />
     </>
   );
 };
+
 export default PeopleList;
