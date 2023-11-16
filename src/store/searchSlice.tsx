@@ -1,15 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { LS_SEARCH } from '../models/const.tsx';
 
-interface SearchState {
+export interface SearchState {
   value: string;
 }
 
+const initialState: SearchState = {
+  value: localStorage.getItem(LS_SEARCH) || '',
+};
+
 export const searchSlice = createSlice({
   name: 'search',
-  initialState: {
-    value: localStorage.getItem(LS_SEARCH) || '',
-  },
+  initialState,
   reducers: {
     setSearchValue: (state, action) => {
       state.value = action.payload;

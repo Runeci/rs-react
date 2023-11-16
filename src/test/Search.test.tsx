@@ -1,14 +1,11 @@
 import { describe, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
-import {
-  SearchContext,
-  UpdateSearchContext,
-} from '../components/SearchContext.tsx';
+import { screen, waitFor } from '@testing-library/react';
+
 import { Search } from '../components/Search.tsx';
-import { MemoryRouter } from 'react-router-dom';
 import { userEvent } from '@testing-library/user-event';
 import { LS_SEARCH } from '../models/const.tsx';
 import { act } from 'react-dom/test-utils';
+import { renderWithProviders } from './test-utils.tsx';
 
 describe('Search', () => {
   const mockLocalStorage: Record<string, string> = {
@@ -29,22 +26,15 @@ describe('Search', () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
-
     const searchValue = localStorage.getItem(LS_SEARCH) || '';
-    const setSearchValue = vi.fn().mockImplementation((newVal: string) => {
-      localStorage.setItem(LS_SEARCH, newVal);
-    });
     await act(() => {
-      render(
-        <SearchContext.Provider value={searchValue}>
-          <UpdateSearchContext.Provider value={setSearchValue}>
-            <Search />
-          </UpdateSearchContext.Provider>
-        </SearchContext.Provider>,
-        {
-          wrapper: MemoryRouter,
-        }
-      );
+      renderWithProviders(<Search />, {
+        preloadedState: {
+          search: {
+            value: searchValue,
+          },
+        },
+      });
     });
   });
 
