@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { START_PAGE } from '../models/const.tsx';
+import { START_PAGE } from '../../models/const.tsx';
 import { useSearchParams } from 'react-router-dom';
-import { ListQueryParams } from '../models/enums.tsx';
-import { changePerPage } from '../store/viewPerPageSlice.tsx';
-import { useAppDispatch, useAppSelector } from '../store/redux.tsx';
+import { ListQueryParams } from '../../models/enums.tsx';
+import { changePerPage } from '../../store/viewPerPageSlice.tsx';
+import { useAppDispatch, useAppSelector } from '../../store/redux.tsx';
 
 interface PaginationProps {
   maxAmountOfPages: number;

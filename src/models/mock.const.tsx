@@ -1,4 +1,4 @@
-import { SWPeople } from '../services/apiSlice.tsx';
+import { SWPeople } from '../store/api/apiSlice.tsx';
 
 export const PERSON_MOCK = {
   name: '13',

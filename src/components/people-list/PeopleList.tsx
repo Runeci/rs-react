@@ -1,17 +1,17 @@
-import Person from './Person.tsx';
+import Person from './person/Person.tsx';
 import {
   createSearchParams,
   Outlet,
   useNavigate,
   useSearchParams,
 } from 'react-router-dom';
-import { ROUTER_PATHS } from '../router/router.tsx';
-import { SWPerson, useGetPeopleInfoQuery } from '../services/apiSlice.tsx';
-import { ListQueryParams } from '../models/enums.tsx';
-import { START_PAGE } from '../models/const.tsx';
-import { setLoadingFlagPeople } from '../store/loadingFlagPeopleSlice.tsx';
+import { ROUTER_PATHS } from '../../router/router.tsx';
+import { SWPerson, useGetPeopleInfoQuery } from '../../store/api/apiSlice.tsx';
+import { ListQueryParams } from '../../models/enums.tsx';
+import { START_PAGE } from '../../models/const.tsx';
+import { setLoadingFlagPeople } from '../../store/loadingFlagPeopleSlice.tsx';
 import { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../store/redux.tsx';
+import { useAppDispatch, useAppSelector } from '../../store/redux.tsx';
 
 const PeopleList = () => {
   const navigate = useNavigate();

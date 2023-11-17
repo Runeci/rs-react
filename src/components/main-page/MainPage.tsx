@@ -1,11 +1,11 @@
-import { Search } from './Search.tsx';
-import { Pagination } from './Pagination.tsx';
+import { Search } from '../search/Search.tsx';
+import { Pagination } from '../pagination/Pagination.tsx';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { ListQueryParams } from '../models/enums.tsx';
-import PeopleList from './PeopleList.tsx';
-import { useGetPeopleInfoQuery } from '../services/apiSlice.tsx';
-import { DEFAULT_ITEMS_PER_PAGE, START_PAGE } from '../models/const.tsx';
-import { useAppSelector } from '../store/redux.tsx';
+import { ListQueryParams } from '../../models/enums.tsx';
+import PeopleList from '../people-list/PeopleList.tsx';
+import { useGetPeopleInfoQuery } from '../../store/api/apiSlice.tsx';
+import { DEFAULT_ITEMS_PER_PAGE, START_PAGE } from '../../models/const.tsx';
+import { useAppSelector } from '../../store/redux.tsx';
 
 const MainPage = () => {
   const { id } = useParams();

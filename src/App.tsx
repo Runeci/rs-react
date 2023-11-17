@@ -1,6 +1,6 @@
 import './App.css';
 import { ErrorBoundary } from './helpers/ErrorBoundary.tsx';
-import MainPage from './components/MainPage.tsx';
+import MainPage from './components/main-page/MainPage.tsx';
 
 import { Provider } from 'react-redux';
 import { setupStore } from './store/store.tsx';

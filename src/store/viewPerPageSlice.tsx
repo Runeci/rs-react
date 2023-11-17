@@ -10,11 +10,13 @@ interface ViewPerPage {
   value: string;
 }
 
+const initialState: ViewPerPage = {
+  value: perPageQueryParam || DEFAULT_ITEMS_PER_PAGE.toString(),
+};
+
 export const viewPerPageSlice = createSlice({
   name: 'perPageCount',
-  initialState: {
-    value: perPageQueryParam || DEFAULT_ITEMS_PER_PAGE,
-  },
+  initialState,
   reducers: {
     changePerPage: (state, action) => {
       state.value = action.payload;
@@ -23,8 +25,5 @@ export const viewPerPageSlice = createSlice({
 });
 
 export const { changePerPage } = viewPerPageSlice.actions;
-
-export const selectItemsPerPage = (state: { itemsPerPage: ViewPerPage }) =>
-  state.itemsPerPage.value;
 
 export default viewPerPageSlice.reducer;

@@ -4,11 +4,11 @@ import {
   useParams,
   useSearchParams,
 } from 'react-router-dom';
-import { ROUTER_PATHS } from '../router/router.tsx';
-import { useGetPersonDetailQuery } from '../services/apiSlice.tsx';
+import { ROUTER_PATHS } from '../../router/router.tsx';
+import { useGetPersonDetailQuery } from '../../store/api/apiSlice.tsx';
 import { useEffect } from 'react';
-import { setLoadingFlagDetails } from '../store/loadingFlagDetails.tsx';
-import { useAppDispatch, useAppSelector } from '../store/redux.tsx';
+import { setLoadingFlagDetails } from '../../store/loadingFlagDetails.tsx';
+import { useAppDispatch, useAppSelector } from '../../store/redux.tsx';
 
 const Details = () => {
   const navigate = useNavigate();

@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import Person from '../components/Person.tsx';
+import Person from './Person.tsx';
 
-import { PERSON_MOCK } from '../models/mock.const.tsx';
+import { PERSON_MOCK } from '../../../models/mock.const.tsx';
 
 //Ensure that the card component renders the relevant card data;
 describe('Person.tsx', () => {

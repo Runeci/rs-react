@@ -1,14 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-interface LoadingFlagPeople {
+export interface LoadingFlagPeopleState {
   value: boolean;
 }
 
+const initialState: LoadingFlagPeopleState = {
+  value: true,
+};
+
 export const loadingFlagPeopleSlice = createSlice({
   name: 'loadingFlagPeople',
-  initialState: {
-    value: true,
-  },
+  initialState,
   reducers: {
     setLoadingFlagPeople: (
       state,
@@ -20,9 +22,5 @@ export const loadingFlagPeopleSlice = createSlice({
 });
 
 export const { setLoadingFlagPeople } = loadingFlagPeopleSlice.actions;
-
-export const selectPeopleLoadingFlag = (state: {
-  loadingFlagPeople: LoadingFlagPeople;
-}) => state.loadingFlagPeople.value;
 
 export default loadingFlagPeopleSlice.reducer;

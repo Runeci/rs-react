@@ -5,7 +5,7 @@ import {
 } from '@reduxjs/toolkit';
 import searchReducer from './searchSlice.tsx';
 import viewPerPageReducer from './viewPerPageSlice.tsx';
-import { apiSlice } from '../services/apiSlice.tsx';
+import { apiSlice } from './api/apiSlice.tsx';
 import loadingFlagPeopleReducer from './loadingFlagPeopleSlice.tsx';
 import loadingFlagDetailsSReducer from './loadingFlagDetails.tsx';
 

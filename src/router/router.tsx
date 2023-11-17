@@ -4,8 +4,8 @@ import {
   Route,
 } from 'react-router-dom';
 import App from '../App.tsx';
-import Details from '../components/Details.tsx';
-import NoPageFound from '../components/NoPageFound.tsx';
+import Details from '../components/person-details/Details.tsx';
+import NoPageFound from '../components/no-page-found/NoPageFound.tsx';
 
 export const ROUTER_PATHS = {
   root: '/',

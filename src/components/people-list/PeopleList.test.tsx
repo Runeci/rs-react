@@ -1,11 +1,11 @@
 import { describe } from 'vitest';
 import { screen, waitFor } from '@testing-library/react';
-import PeopleList from '../components/PeopleList.tsx';
-import { renderWithProviders } from './test-utils.tsx';
+import PeopleList from './PeopleList.tsx';
+import { renderWithProviders } from '../../test/test-utils.tsx';
 import { MemoryRouter } from 'react-router-dom';
-import { server } from './server.tsx';
+import { server } from '../../test/server.tsx';
 import { http, HttpResponse } from 'msw';
-import { API_URL } from '../services/apiSlice.tsx';
+import { API_URL } from '../../store/api/apiSlice.tsx';
 
 describe('PeopleList.tsx', () => {
   //Verify that the component renders the specified number of cards

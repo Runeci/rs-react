@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw';
-import { API_URL } from '../services/apiSlice.tsx';
+import { API_URL } from '../store/api/apiSlice.tsx';
 import { PEOPLE_MOCK, PERSON_MOCK } from '../models/mock.const.tsx';
 
 export const handlers = [

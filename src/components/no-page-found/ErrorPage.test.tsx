@@ -1,8 +1,8 @@
 import { describe, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import NoPageFound from '../components/NoPageFound.tsx';
+import NoPageFound from './NoPageFound.tsx';
 import { BrowserRouter, MemoryRouter, Route, Routes } from 'react-router-dom';
-import App from '../App.tsx';
+import App from '../../App.tsx';
 
 describe('NoPageFound.tsx', () => {
   it('should define a page error component', () => {

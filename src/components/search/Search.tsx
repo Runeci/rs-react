@@ -1,9 +1,9 @@
 import { FormEvent } from 'react';
-import { setSearchValue } from '../store/searchSlice.tsx';
+import { setSearchValue } from '../../store/searchSlice.tsx';
 import { useSearchParams } from 'react-router-dom';
-import { ListQueryParams } from '../models/enums.tsx';
-import { LS_SEARCH } from '../models/const.tsx';
-import { useAppDispatch, useAppSelector } from '../store/redux.tsx';
+import { ListQueryParams } from '../../models/enums.tsx';
+import { LS_SEARCH } from '../../models/const.tsx';
+import { useAppDispatch, useAppSelector } from '../../store/redux.tsx';
 
 export function Search() {
   const actionDispatch = useAppDispatch();

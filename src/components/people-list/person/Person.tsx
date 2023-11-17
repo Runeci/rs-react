@@ -3,8 +3,8 @@ import {
   useNavigate,
   useSearchParams,
 } from 'react-router-dom';
-import { ROUTER_PATHS } from '../router/router.tsx';
-import { SWPerson } from '../services/apiSlice.tsx';
+import { ROUTER_PATHS } from '../../../router/router.tsx';
+import { SWPerson } from '../../../store/api/apiSlice.tsx';
 
 interface PersonProps {
   person: SWPerson;

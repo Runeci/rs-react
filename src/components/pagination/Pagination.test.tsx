@@ -1,10 +1,10 @@
 import { describe, expect } from 'vitest';
 import { screen } from '@testing-library/react';
-import { Pagination } from '../components/Pagination.tsx';
+import { Pagination } from './Pagination.tsx';
 import { BrowserRouter, MemoryRouter } from 'react-router-dom';
-import { ListQueryParams } from '../models/enums.tsx';
+import { ListQueryParams } from '../../models/enums.tsx';
 import { userEvent } from '@testing-library/user-event';
-import { renderWithProviders } from './test-utils.tsx';
+import { renderWithProviders } from '../../test/test-utils.tsx';
 
 describe('Pagination.tsx', () => {
   //

@@ -1,6 +1,6 @@
 import { describe } from 'vitest';
 import { render } from '@testing-library/react';
-import App from '../App.tsx';
+import App from './App.tsx';
 import { BrowserRouter } from 'react-router-dom';
 
 describe('App.test.tsx', () => {

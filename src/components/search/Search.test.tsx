@@ -1,11 +1,11 @@
 import { describe, vi } from 'vitest';
 import { screen, waitFor } from '@testing-library/react';
 
-import { Search } from '../components/Search.tsx';
+import { Search } from './Search.tsx';
 import { userEvent } from '@testing-library/user-event';
-import { LS_SEARCH } from '../models/const.tsx';
+import { LS_SEARCH } from '../../models/const.tsx';
 import { act } from 'react-dom/test-utils';
-import { renderWithProviders } from './test-utils.tsx';
+import { renderWithProviders } from '../../test/test-utils.tsx';
 import { MemoryRouter } from 'react-router-dom';
 
 describe('Search', () => {
