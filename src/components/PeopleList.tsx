@@ -7,15 +7,11 @@ import {
 } from 'react-router-dom';
 import { ROUTER_PATHS } from '../router/router.tsx';
 import { SWPerson, useGetPeopleInfoQuery } from '../services/apiSlice.tsx';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectSearch } from '../store/searchSlice.tsx';
 import { ListQueryParams } from '../models/enums.tsx';
 import { START_PAGE } from '../models/const.tsx';
-import {
-  selectPeopleLoadingFlag,
-  setLoadingFlagPeople,
-} from '../store/loadingFlagPeopleSlice.tsx';
+import { setLoadingFlagPeople } from '../store/loadingFlagPeopleSlice.tsx';
 import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../store/redux.tsx';
 
 const PeopleList = () => {
   const navigate = useNavigate();
@@ -23,9 +19,11 @@ const PeopleList = () => {
   const [queryParams] = useSearchParams();
   const page = queryParams.get(ListQueryParams.Page) || START_PAGE.toString();
 
-  const dispatchAction = useDispatch();
-  const isLoadingPeopleList = useSelector(selectPeopleLoadingFlag);
-  const search = useSelector(selectSearch);
+  const dispatchAction = useAppDispatch();
+  const isLoadingPeopleList = useAppSelector(
+    (state) => state.loadingFlagPeopleReducer.value
+  );
+  const search = useAppSelector((state) => state.searchReducer.value);
   const {
     data: people,
     isFetching,

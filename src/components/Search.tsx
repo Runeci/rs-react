@@ -1,14 +1,14 @@
 import { FormEvent } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectSearch, setSearchValue } from '../store/searchSlice.tsx';
+import { setSearchValue } from '../store/searchSlice.tsx';
 import { useSearchParams } from 'react-router-dom';
 import { ListQueryParams } from '../models/enums.tsx';
 import { LS_SEARCH } from '../models/const.tsx';
+import { useAppDispatch, useAppSelector } from '../store/redux.tsx';
 
 export function Search() {
-  const actionDispatch = useDispatch();
+  const actionDispatch = useAppDispatch();
   const [queryParams, setQueryParams] = useSearchParams();
-  const search = useSelector(selectSearch);
+  const search = useAppSelector((state) => state.searchReducer);
 
   function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -39,7 +39,7 @@ export function Search() {
           data-testid="search-input"
           className="searchInput"
           name="searchInput"
-          defaultValue={search}
+          defaultValue={search.value}
         ></input>
         <button data-testid="search-button" type="submit">
           Search

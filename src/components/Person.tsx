@@ -1,10 +1,10 @@
-import { SWPerson } from '../services/SWAPI.tsx';
 import {
   createSearchParams,
   useNavigate,
   useSearchParams,
 } from 'react-router-dom';
 import { ROUTER_PATHS } from '../router/router.tsx';
+import { SWPerson } from '../services/apiSlice.tsx';
 
 interface PersonProps {
   person: SWPerson;

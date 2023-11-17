@@ -1,4 +1,4 @@
-import { PeopleContext } from '../components/PeopleListContext.tsx';
+import { SWPeople } from '../services/apiSlice.tsx';
 
 export const PERSON_MOCK = {
   name: '13',
@@ -12,7 +12,8 @@ export const PERSON_MOCK = {
   eye_color: '31',
 };
 
-export const PEOPLE_CONTEXT_MOCK: PeopleContext = {
+export const PEOPLE_MOCK: SWPeople = {
+  count: 2,
   results: [
     {
       name: '1',
@@ -37,12 +38,4 @@ export const PEOPLE_CONTEXT_MOCK: PeopleContext = {
       eye_color: '2',
     },
   ],
-  isLoading: false,
-  maxPageAmount: 10,
 };
-
-export const PEOPLE_CONTEXT_NO_RESULTS_MOCK: PeopleContext = {
-  results: [],
-  isLoading: false,
-  maxPageAmount: 1,
-} as PeopleContext;

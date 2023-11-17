@@ -3,16 +3,13 @@ import { render, screen } from '@testing-library/react';
 import { PeopleListContext } from '../components/PeopleListContext.tsx';
 import PeopleList from '../components/PeopleList.tsx';
 import { BrowserRouter } from 'react-router-dom';
-import {
-  PEOPLE_CONTEXT_MOCK,
-  PEOPLE_CONTEXT_NO_RESULTS_MOCK,
-} from '../models/mock.const.tsx';
+import { PEOPLE_MOCK } from '../models/mock.const.tsx';
 
 describe('PeopleList.tsx', () => {
   //Verify that the component renders the specified number of cards
   it('should render the right amount of people', function () {
     render(
-      <PeopleListContext.Provider value={PEOPLE_CONTEXT_MOCK}>
+      <PeopleListContext.Provider value={PEOPLE_MOCK}>
         <PeopleList></PeopleList>
       </PeopleListContext.Provider>,
       {

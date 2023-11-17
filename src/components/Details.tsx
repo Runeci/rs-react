@@ -7,22 +7,24 @@ import {
 import { ROUTER_PATHS } from '../router/router.tsx';
 import { useGetPersonDetailQuery } from '../services/apiSlice.tsx';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { setLoadingFlagDetails } from '../store/loadingFlagDetails.tsx';
+import { useAppDispatch, useAppSelector } from '../store/redux.tsx';
 
 const Details = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [queryParams] = useSearchParams();
-  const dispatchAction = useDispatch();
-  const detailsAreLoading = useSelector(setLoadingFlagDetails);
+  const dispatchAction = useAppDispatch();
+  const detailsAreLoading = useAppSelector(
+    (state) => state.loadingFlagDetailsSReducer
+  );
 
   const {
     data: detail,
     isSuccess,
     isFetching,
     isError,
-  } = useGetPersonDetailQuery(id!);
+  } = useGetPersonDetailQuery(id || '1');
 
   useEffect(() => {
     if (isFetching) {
@@ -41,7 +43,7 @@ const Details = () => {
 
   let content;
 
-  if (detailsAreLoading) {
+  if (detailsAreLoading.value) {
     content = <div>Details are loading...</div>;
   } else if (isSuccess) {
     content = (

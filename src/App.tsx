@@ -3,12 +3,12 @@ import { ErrorBoundary } from './helpers/ErrorBoundary.tsx';
 import MainPage from './components/MainPage.tsx';
 
 import { Provider } from 'react-redux';
-import store from './store/store.tsx';
+import { setupStore } from './store/store.tsx';
 
 const App = () => {
   return (
     <ErrorBoundary>
-      <Provider store={store}>
+      <Provider store={setupStore()}>
         <MainPage />
       </Provider>
     </ErrorBoundary>

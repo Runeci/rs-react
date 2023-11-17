@@ -1,10 +1,10 @@
-import { configureStore, EnhancedStore } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import { render, RenderOptions } from '@testing-library/react';
 import { PropsWithChildren } from 'react';
-import { rootReducer } from '../store/store.tsx';
-import { BrowserRouter } from 'react-router-dom';
+import { AppStore, rootReducer } from '../store/store.tsx';
 import { SearchState } from '../store/searchSlice.tsx';
+import { apiSlice } from '../services/apiSlice.tsx';
 
 interface RootState {
   search: SearchState;
@@ -12,7 +12,7 @@ interface RootState {
 
 interface RenderWithProvidersOptions {
   preloadedState?: RootState;
-  store?: EnhancedStore<RootState>;
+  store?: AppStore;
 }
 
 export function renderWithProviders(
@@ -22,16 +22,14 @@ export function renderWithProviders(
     store = configureStore({
       reducer: rootReducer,
       preloadedState: preloadedState || ({} as RootState),
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(apiSlice.middleware),
     }),
     ...renderOptions
   }: RenderOptions & RenderWithProvidersOptions = {}
 ) {
   function Wrapper({ children }: PropsWithChildren) {
-    return (
-      <BrowserRouter>
-        <Provider store={store}>{children}</Provider>
-      </BrowserRouter>
-    );
+    return <Provider store={store}>{children}</Provider>;
   }
 
   return { store, ...render(ui, { wrapper: Wrapper, ...renderOptions }) };

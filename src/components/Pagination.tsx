@@ -2,11 +2,8 @@ import { useState } from 'react';
 import { START_PAGE } from '../models/const.tsx';
 import { useSearchParams } from 'react-router-dom';
 import { ListQueryParams } from '../models/enums.tsx';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  changePerPage,
-  selectItemsPerPage,
-} from '../store/viewPerPageSlice.tsx';
+import { changePerPage } from '../store/viewPerPageSlice.tsx';
+import { useAppDispatch, useAppSelector } from '../store/redux.tsx';
 
 interface PaginationProps {
   maxAmountOfPages: number;
@@ -14,8 +11,10 @@ interface PaginationProps {
 }
 
 export function Pagination({ maxAmountOfPages, queryKey }: PaginationProps) {
-  const dispatch = useDispatch();
-  const itemsPerPage = useSelector(selectItemsPerPage);
+  const dispatch = useAppDispatch();
+  const itemsPerPage = useAppSelector(
+    (store) => store.viewPerPageReducer.value
+  );
 
   const [queryParams, setQueryParams] = useSearchParams();
   const [currPage, setCurrentPage] = useState<number>(
