@@ -55,15 +55,16 @@ const PeopleList = () => {
   if (isLoadingPeopleList) {
     content = <div>Loading...</div>;
   } else if (isSuccess) {
-    content = people.length ? (
-      <ul className="people-list" onClick={closeDetails}>
-        {people.results.map((person: SWPerson) => (
-          <Person person={person} key={person.name} />
-        ))}
-      </ul>
-    ) : (
-      <div>No results</div>
-    );
+    content =
+      people.results && people.results.length > 0 ? (
+        <ul className="people-list" onClick={closeDetails}>
+          {people.results.map((person: SWPerson) => (
+            <Person person={person} key={person.name} />
+          ))}
+        </ul>
+      ) : (
+        <div>No results</div>
+      );
   } else if (error) {
     if ('status' in error && error.status === 404) {
       content = <div>Error loading data. Try again</div>;

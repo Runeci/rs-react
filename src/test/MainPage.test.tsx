@@ -1,18 +1,14 @@
 import { describe, expect } from 'vitest';
-import { render } from '@testing-library/react';
 import MainPage from '../components/MainPage.tsx';
-import { BrowserRouter } from 'react-router-dom';
-import PeopleProvider from '../components/PeopleListContext.tsx';
+import { MemoryRouter } from 'react-router-dom';
+import { renderWithProviders } from './test-utils.tsx';
 
 describe('Main page.tsx', () => {
   it('should define component', function () {
-    const component = render(
-      <PeopleProvider>
+    const component = renderWithProviders(
+      <MemoryRouter>
         <MainPage />
-      </PeopleProvider>,
-      {
-        wrapper: BrowserRouter,
-      }
+      </MemoryRouter>
     );
     expect(component).toBeDefined();
   });

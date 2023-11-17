@@ -4,7 +4,7 @@ import { PEOPLE_MOCK, PERSON_MOCK } from '../models/mock.const.tsx';
 
 export const handlers = [
   http.get(API_URL, () => {
-    console.log('fe');
+    console.log('fe, [people');
     return HttpResponse.json(PEOPLE_MOCK);
   }),
   http.get('https://swapi.dev/api/people/:id', () => {
