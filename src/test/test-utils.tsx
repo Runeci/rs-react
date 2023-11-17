@@ -1,34 +1,28 @@
-import { configureStore } from '@reduxjs/toolkit';
+import React, { PropsWithChildren } from 'react';
+import type { RenderOptions } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import type { PreloadedState } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
-import { render, RenderOptions } from '@testing-library/react';
-import { PropsWithChildren } from 'react';
-import { AppStore, rootReducer } from '../store/store.tsx';
-import { SearchState } from '../store/searchSlice.tsx';
-import { apiSlice } from '../services/apiSlice.tsx';
 
-interface RootState {
-  search: SearchState;
-}
+import { AppStore, RootState, setupStore } from '../store/store';
+import { setupListeners } from '@reduxjs/toolkit/query';
 
-interface RenderWithProvidersOptions {
-  preloadedState?: RootState;
+interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
+  preloadedState?: PreloadedState<RootState>;
   store?: AppStore;
 }
 
 export function renderWithProviders(
   ui: React.ReactElement,
   {
-    preloadedState,
-    store = configureStore({
-      reducer: rootReducer,
-      preloadedState: preloadedState || ({} as RootState),
-      middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(apiSlice.middleware),
-    }),
+    preloadedState = {},
+    store = setupStore(preloadedState),
     ...renderOptions
-  }: RenderOptions & RenderWithProvidersOptions = {}
+  }: ExtendedRenderOptions = {}
 ) {
-  function Wrapper({ children }: PropsWithChildren) {
+  setupListeners(store.dispatch);
+
+  function Wrapper({ children }: PropsWithChildren<unknown>): JSX.Element {
     return <Provider store={store}>{children}</Provider>;
   }
 

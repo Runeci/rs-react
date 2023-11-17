@@ -6,6 +6,7 @@ import { userEvent } from '@testing-library/user-event';
 import { LS_SEARCH } from '../models/const.tsx';
 import { act } from 'react-dom/test-utils';
 import { renderWithProviders } from './test-utils.tsx';
+import { MemoryRouter } from 'react-router-dom';
 
 describe('Search', () => {
   const mockLocalStorage: Record<string, string> = {
@@ -28,13 +29,18 @@ describe('Search', () => {
     vi.clearAllMocks();
     const searchValue = localStorage.getItem(LS_SEARCH) || '';
     await act(() => {
-      renderWithProviders(<Search />, {
-        preloadedState: {
-          search: {
-            value: searchValue,
+      renderWithProviders(
+        <MemoryRouter>
+          <Search />
+        </MemoryRouter>,
+        {
+          preloadedState: {
+            searchReducer: {
+              value: searchValue,
+            },
           },
-        },
-      });
+        }
+      );
     });
   });
 

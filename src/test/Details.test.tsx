@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect } from 'vitest';
 import { screen, waitFor } from '@testing-library/react';
 import Details from '../components/Details.tsx';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, MemoryRouter, Route, Routes } from 'react-router-dom';
 import { userEvent } from '@testing-library/user-event';
 import { renderWithProviders } from './test-utils.tsx';
 import { ROUTER_PATHS } from '../router/router.tsx';
@@ -15,15 +15,16 @@ describe('Details.tsx interactions', () => {
 
   beforeEach(() => {
     renderWithProviders(
-      <MemoryRouter>
+      <BrowserRouter>
         <Routes>
           <Route path={ROUTER_PATHS.root} element={<App />}>
             <Route path={`${ROUTER_PATHS.detail}/:id`} element={<Details />} />
           </Route>
         </Routes>
-      </MemoryRouter>
+      </BrowserRouter>
     );
   });
+
   afterEach(() => {
     vi.restoreAllMocks();
   });
@@ -61,6 +62,21 @@ describe('Details.tsx interactions', () => {
       expect(requestSpy).toHaveBeenCalledWith(`${API_URL}1`);
     });
   });
+
+  //Make sure the detailed card component correctly displays the detailed card data
+  it('should correctly display card data', async () => {
+    await waitFor(async () => {
+      await user.click(screen.getAllByTestId('person-container')[0]);
+      const detail = screen.getByTestId('detail-container');
+      console.log(detail);
+    });
+    expect(screen.getByTestId('detail-name')).toHaveTextContent(
+      PERSON_MOCK.name
+    );
+    expect(
+      screen.getByText(`Gender: ${PERSON_MOCK.gender}`)
+    ).toBeInTheDocument();
+  });
 });
 
 describe('Details.tsx', () => {
@@ -74,17 +90,6 @@ describe('Details.tsx', () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
-  });
-
-  //Make sure the detailed card component correctly displays the detailed card data
-  it('should correctly display card data', async () => {
-    await waitFor(() => screen.getByTestId('detail-container'));
-    expect(screen.getByTestId('detail-name')).toHaveTextContent(
-      PERSON_MOCK.name
-    );
-    expect(
-      screen.getByText(`Gender: ${PERSON_MOCK.gender}`)
-    ).toBeInTheDocument();
   });
 
   //Check that a loading indicator is displayed while fetching data;

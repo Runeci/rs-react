@@ -24,7 +24,7 @@ const Details = () => {
     isSuccess,
     isFetching,
     isError,
-  } = useGetPersonDetailQuery(id || '1');
+  } = useGetPersonDetailQuery(id || '');
 
   useEffect(() => {
     if (isFetching) {
