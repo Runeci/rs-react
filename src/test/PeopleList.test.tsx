@@ -1,37 +1,38 @@
-import { describe } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { PeopleListContext } from '../components/PeopleListContext.tsx';
+import { beforeEach, describe } from 'vitest';
+import { screen, waitFor } from '@testing-library/react';
 import PeopleList from '../components/PeopleList.tsx';
-import { BrowserRouter } from 'react-router-dom';
-import { PEOPLE_MOCK } from '../models/mock.const.tsx';
+import { renderWithProviders } from './test-utils.tsx';
+import { MemoryRouter } from 'react-router-dom';
+import { http, HttpResponse } from 'msw';
+import { API_URL } from '../services/apiSlice.tsx';
+import { server } from './server.tsx';
 
 describe('PeopleList.tsx', () => {
-  //Verify that the component renders the specified number of cards
-  it('should render the right amount of people', function () {
-    render(
-      <PeopleListContext.Provider value={PEOPLE_MOCK}>
-        <PeopleList></PeopleList>
-      </PeopleListContext.Provider>,
-      {
-        wrapper: BrowserRouter,
-      }
+  beforeEach(() => {
+    renderWithProviders(
+      <MemoryRouter>
+        <PeopleList />
+      </MemoryRouter>
     );
-    const list = screen.getAllByTestId('person-container');
-    expect(list.length).toBe(2);
+  });
+  //Verify that the component renders the specified number of cards
+  it('should render the right amount of people', async function () {
+    await waitFor(() => {
+      const list = screen.getAllByTestId('person-container');
+      expect(list.length).toBe(2);
+    });
   });
 
   //Check that an appropriate message is displayed if no cards are present.
-  it('should show no results fount if no people available', function () {
-    render(
-      <PeopleListContext.Provider value={PEOPLE_CONTEXT_NO_RESULTS_MOCK}>
-        <PeopleList></PeopleList>
-      </PeopleListContext.Provider>,
-      {
-        wrapper: BrowserRouter,
-      }
+  it('should show no results fount if no people available', async function () {
+    server.use(
+      http.get(API_URL, () => {
+        console.log('fe');
+        return HttpResponse.json([]);
+      })
     );
-    const noResultsContainer = screen.getByTestId('people-no-results');
-    expect(noResultsContainer).toBeInTheDocument();
-    expect(screen.getByText(/No results/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(/No results/i)).toBeInTheDocument();
+    });
   });
 });
